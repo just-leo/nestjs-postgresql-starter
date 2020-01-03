@@ -10,11 +10,11 @@ loadDotEnv({ debug: true });
 export default () => {
   const environment = env.from(process.env);
   const MIGRATIONS_DIR = 'migrations';
-  const NODE_ENV = environment.get('NODE_ENV')
+  const NODE_ENV = environment.get('NODE_ENV', 'dev')
     .asEnum(['dev', 'production', 'test']);
   const isProduction = NODE_ENV === 'production';
 
-  let config = {
+  const config = {
     isProduction,
     node_env: NODE_ENV,
     port: environment.get('PORT', '3000')
@@ -41,7 +41,7 @@ export default () => {
       ssl: isProduction,
       synchronize: !isProduction,
       // https://github.com/typeorm/typeorm/blob/master/docs/logging.md
-      logging: ['error', 'warn', 'info', 'schema'], // 'schema', 'log', 'query'
+      logging: ['error', 'warn', 'schema'], // 'schema', 'log', 'query'
       // maxQueryExecutionTime: 1000, // log queries that take too much time to execution
     },
     run_migrations: environment.get('RUN_MIGRATIONS', 'false')
@@ -54,10 +54,7 @@ export default () => {
   try {
     if (!isProduction) {
       const local = require('./local');
-      config = {
-        ...config,
-        ...local,
-      };
+      deepMerge(config, local.default);
     }
   } catch (err) {
     // @ts-ignore
@@ -65,3 +62,20 @@ export default () => {
 
   return config;
 };
+
+function deepMerge(target, obj2) {
+  Object.keys(obj2).forEach(key => {
+    const val = obj2[key];
+    if (!target[key]) {
+      target[key] = val;
+    } else if (Array.isArray(val)) {
+      val.forEach(item => target[key].indexOf(item) === -1 && target[key].push(item));
+    } else if (typeof val !== null && typeof val === 'object') {
+      if (typeof target[key] !== 'object') { target[key] = {}; } // to allow assign new object from source
+      target[key] = deepMerge(target[key], val);
+    } else {
+      target[key] = val;
+    }
+  });
+  return target;
+}
