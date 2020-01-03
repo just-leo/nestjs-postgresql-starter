@@ -12,7 +12,8 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @ApiOperation({ summary: 'Health check route' })
-  @Get('healthcheck')
+  @Get()
+  @ApiResponse({ status: 200, description: 'Ok' })
   healthCheck(): string {
     return this.appService.getAppStatus();
   }
