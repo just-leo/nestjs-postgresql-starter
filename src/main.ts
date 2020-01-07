@@ -1,15 +1,17 @@
 import { NestFactory } from '@nestjs/core';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
+  const logger = new Logger('main');
   const app = await NestFactory.create(AppModule, {
     cors: true,
-    // logger: ['error', 'warn'],
+    logger: ['log', 'error', 'warn', 'debug', 'verbose'],
   });
   app.setGlobalPrefix('api');
   // app.useGlobalFilters();
+  app.useGlobalPipes(new ValidationPipe());
 
   if (!AppModule.isProduction) {
     const options = new DocumentBuilder()
@@ -17,15 +19,15 @@ async function bootstrap() {
       .setDescription('The Realworld API description')
       .setVersion('1.0')
       .addTag('api')
-      // .addBearerAuth()
+      .addBearerAuth()
       .build();
     const document = SwaggerModule.createDocument(app, options);
 
     SwaggerModule.setup('/docs', app, document);
 
-    Logger.verbose(`App docs available at /docs url`);
+    logger.verbose(`App docs available at /docs url`);
   }
-  Logger.debug(`App started on ${AppModule.port} port`);
-  await app.listen(AppModule.port);
+  logger.log(`App started on ${AppModule.hostname}:${AppModule.port}`);
+  await app.listen(AppModule.port, AppModule.hostname);
 }
 bootstrap();

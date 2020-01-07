@@ -9,12 +9,14 @@ import {
 @ApiTags('healthcheck')
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+  ) {}
 
-  @ApiOperation({ summary: 'Health check route' })
   @Get()
+  @ApiOperation({ summary: 'Health check route' })
   @ApiResponse({ status: 200, description: 'Ok' })
   healthCheck(): string {
-    return this.appService.getAppStatus();
+    return this.appService.getStatus();
   }
 }

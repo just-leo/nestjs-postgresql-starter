@@ -19,6 +19,11 @@ export default () => {
     node_env: NODE_ENV,
     port: environment.get('PORT', '3000')
       .asPortNumber(),
+    hostname: environment.get('HOSTNAME', '0.0.0.0')
+      .asString(),
+    jwt: {
+      secret: environment.get('JWT_SECRET').required().asString(),
+    },
     typeOrmConfig: {
       type: 'postgres',
       host: environment.get('POSTGRES_HOST')

@@ -4,10 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from 'nest-schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
 import config from './config';
-import { AdvertModule } from './modules/advert/advert.module';
-import { CrawlerModule } from './modules/crawler/crawler.module';
-import { TelegramBotModule } from './modules/telegram-bot/telegram-bot.module';
 
 @Module({
   imports: [
@@ -20,9 +19,8 @@ import { TelegramBotModule } from './modules/telegram-bot/telegram-bot.module';
       waiting: true,
     }),
     TypeOrmModule.forRoot(),
-    AdvertModule,
-    CrawlerModule,
-    TelegramBotModule,
+    AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -30,10 +28,12 @@ import { TelegramBotModule } from './modules/telegram-bot/telegram-bot.module';
 export class AppModule {
 
   static port: number;
+  static hostname: string;
   static isProduction: boolean;
 
   constructor(private readonly configService: ConfigService) {
     AppModule.port = configService.get('port');
+    AppModule.hostname = configService.get('hostname');
     AppModule.isProduction = configService.get('isProduction');
   }
 }
