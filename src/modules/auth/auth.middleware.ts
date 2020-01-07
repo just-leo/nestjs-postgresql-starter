@@ -4,12 +4,9 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-
   private readonly logger: Logger = new Logger(AuthMiddleware.name);
 
-  constructor(
-    private readonly authService: AuthService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
     this.logger.warn(req.body);

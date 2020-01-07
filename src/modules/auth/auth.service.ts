@@ -16,7 +16,7 @@ export class AuthService {
 
   static hashPassword(password: string): Promise<string> {
     return argon2.hash(password, {
-      timeCost: 5
+      timeCost: 5,
     });
   }
 
@@ -24,11 +24,14 @@ export class AuthService {
     return argon2.verify(hash, password);
   }
 
-  async validateUser({ email, password }: LoginUserDto): Promise<UserEntity|undefined> {
-    const user = await this.userService.findOneBy({
+  async validateUser({
+    email,
+    password,
+  }: LoginUserDto): Promise<UserEntity | undefined> {
+    const user = (await this.userService.findOneBy({
       email,
       password: AuthService.hashPassword(password),
-    }) as UserEntity;
+    })) as UserEntity;
     if (!user) {
       return null;
     }
@@ -36,7 +39,7 @@ export class AuthService {
   }
 
   async signUp(userDto: CreateUserDto) {
-    const { email,  password } = userDto;
+    const { email, password } = userDto;
     // check that same username not registered
     const existsUser = await this.userService.findOneBy({ email });
     if (!existsUser) {
@@ -48,16 +51,23 @@ export class AuthService {
 
       return this.signIn({ email: user.email, password });
     } else {
-      throw new UnauthorizedException('User with such email already registered');
+      throw new UnauthorizedException(
+        'User with such email already registered',
+      );
     }
   }
 
   async signIn({ email, password }): Promise<{ token: string }> {
-    const existsUser = await this.userService.findOneBy({ email }) as UserEntity;
+    const existsUser = (await this.userService.findOneBy({
+      email,
+    })) as UserEntity;
     if (!existsUser) {
       throw new UnauthorizedException('User not found');
     }
-    const isPasswordCorrect = await AuthService.verifyPassword(password, existsUser.password);
+    const isPasswordCorrect = await AuthService.verifyPassword(
+      password,
+      existsUser.password,
+    );
     if (!isPasswordCorrect) {
       throw new UnauthorizedException();
     }

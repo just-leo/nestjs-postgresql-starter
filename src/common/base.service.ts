@@ -4,7 +4,6 @@ import ObjectContaining = jasmine.ObjectContaining;
 import { UserDto } from '../modules/user/dto/user.dto';
 
 export abstract class BaseService {
-
   protected readonly repo: Repository<BaseEntity>;
 
   abstract getQueryBuilder();
@@ -25,11 +24,8 @@ export abstract class BaseService {
     });
     const queryBuilder = this.getQueryBuilder();
     condition.forEach(fieldCondition => {
-      queryBuilder
-        .andWhere(fieldCondition);
+      queryBuilder.andWhere(fieldCondition);
     });
-    return await queryBuilder
-      .setParameters(properties)
-      .getOne();
+    return await queryBuilder.setParameters(properties).getOne();
   }
 }

@@ -21,6 +21,6 @@ const { jwt } = config();
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
-  exports: [PassportModule, AuthService],
+  exports: [AuthService],
 })
 export class AuthModule {}

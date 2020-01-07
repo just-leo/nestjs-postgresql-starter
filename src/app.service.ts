@@ -4,7 +4,6 @@ import * as os from 'os';
 
 @Injectable()
 export class AppService {
-
   constructor(private readonly configService: ConfigService) {}
 
   getStatus(): any {

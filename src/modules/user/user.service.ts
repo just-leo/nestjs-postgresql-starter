@@ -11,8 +11,10 @@ export type User = any;
 
 @Injectable()
 export class UserService extends BaseService {
-
-  constructor(@InjectRepository(UserEntity) protected readonly repo: Repository<UserEntity>) {
+  constructor(
+    @InjectRepository(UserEntity)
+    protected readonly repo: Repository<UserEntity>,
+  ) {
     super();
   }
 
