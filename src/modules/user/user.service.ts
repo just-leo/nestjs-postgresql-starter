@@ -4,10 +4,6 @@ import { UserEntity } from './user.entity';
 import { BaseService } from '../../common/base.service';
 import { QueryBuilder, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { AdvertsRO } from '../advert/advert.interface';
-import { UserDto } from './dto/user.dto';
-
-export type User = any;
 
 @Injectable()
 export class UserService extends BaseService {
