@@ -64,14 +64,6 @@ export default () => {
       // maxQueryExecutionTime: 1000, // log queries that take too much time to execution
     },
     run_migrations: environment.get('RUN_MIGRATIONS', 'false').asBool(),
-    telegramToken: environment
-      .get('TELEGRAM_TOKEN')
-      .required()
-      .asString(),
-    crawlerUrl: environment
-      .get('CRAWLER_URL')
-      .required()
-      .asUrlString(),
   };
 
   try {
